@@ -1,0 +1,21 @@
+name: "CI"
+on:
+  push:
+
+jobs:
+  test-events:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Npm install
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Deploy staging
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+          SURGE_TOKEN: ${{ secrets.SURGE_KEY }}
+        run: |
+          npx surge --project ./build --domain six-lunch.surge.sh
+
