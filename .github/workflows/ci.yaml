@@ -8,14 +8,21 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-      - name: Npm install
-        run: npm install
+      - name: Use nodejs
+        uses: actions/setup-node@v1
+        with:
+          node-version: "18.x"
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm test -- --coverage
+        env:
+          CI: true
       - name: Build
         run: npm run build
       - name: Deploy staging
         env:
           SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
-          SURGE_TOKEN: ${{ secrets.SURGE_KEY }}
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
         run: |
           npx surge --project ./build --domain six-lunch.surge.sh
 
